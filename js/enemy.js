@@ -1,173 +1,294 @@
-export class Enemy {
+class Enemy {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
 
-    constructor(
-        collisionSystem,
-        navigationSystem,
-        player
-    ) {
+        this.width = 25;
+        this.height = 45;
 
-        this.collisionSystem =
-            collisionSystem;
+        this.speed = 0.75;
 
-        this.navigationSystem =
-            navigationSystem;
+        this.directionX = 0;
+        this.directionY = 1;
 
-        this.player = player;
-
-        this.x = 590;
-        this.y = 100;
-
-        this.radius = 15;
-
-        this.speed = 58;
-
-        this.directionX = 1;
-        this.directionY = 0;
-
-        this.patrolPoints = [
-            { x: 590, y: 100 },
-            { x: 780, y: 100 },
-            { x: 780, y: 150 },
-            { x: 590, y: 150 }
-        ];
-
-        this.currentPatrolPoint = 0;
-
-        this.detectedPlayer = false;
+        this.state = "patrol";
     }
 
-    update(deltaTime) {
-
-        if (this.detectedPlayer) {
+    update(targetX, targetY) {
+        if (this.state !== "patrol") {
             return;
         }
 
-        const target =
-            this.patrolPoints[
-                this.currentPatrolPoint
-            ];
+        const dx =
+            targetX - this.x;
 
-        const dx = target.x - this.x;
-        const dy = target.y - this.y;
+        const dy =
+            targetY - this.y;
 
         const distance =
             Math.hypot(dx, dy);
 
-        if (distance < 8) {
+        if (
+            distance > 80 &&
+            distance < 180
+        ) {
+            this.directionX =
+                dx / distance;
 
-            this.currentPatrolPoint =
-                (
-                    this.currentPatrolPoint + 1
-                ) %
-                this.patrolPoints.length;
+            this.directionY =
+                dy / distance;
 
-            return;
+            this.x +=
+                this.directionX *
+                this.speed;
+
+            this.y +=
+                this.directionY *
+                this.speed;
         }
-
-        this.directionX = dx / distance;
-        this.directionY = dy / distance;
-
-        this.collisionSystem.moveEntity(
-            this,
-            this.directionX *
-                this.speed *
-                deltaTime,
-            this.directionY *
-                this.speed *
-                deltaTime
-        );
     }
 
-    stop() {
+    draw(ctx) {
+        ctx.save();
 
-        this.detectedPlayer = true;
-    }
-
-    draw(context) {
-
-        context.save();
-
-        context.translate(
+        ctx.translate(
             this.x,
             this.y
         );
 
-        context.rotate(
-            Math.atan2(
-                this.directionY,
-                this.directionX
-            )
-        );
+        // Shadow
+        ctx.fillStyle =
+            "rgba(0, 0, 0, 0.45)";
 
-        /*
-         * Heavy stylized enemy silhouette.
-         */
+        ctx.beginPath();
 
-        context.fillStyle = "#11161b";
-
-        context.fillRect(
-            -9,
-            -11,
-            18,
-            22
-        );
-
-        context.fillRect(
-            -13,
-            -8,
+        ctx.ellipse(
+            0,
+            23,
+            15,
             5,
-            17
+            0,
+            0,
+            Math.PI * 2
         );
 
-        context.fillRect(
+        ctx.fill();
+
+        // Legs
+        ctx.fillStyle = "#121619";
+
+        ctx.fillRect(
+            -10,
             8,
-            -8,
-            5,
+            8,
             17
         );
 
-        context.fillRect(
-            -7,
-            9,
-            6,
-            10
-        );
-
-        context.fillRect(
+        ctx.fillRect(
             2,
-            9,
-            6,
-            10
+            8,
+            8,
+            17
         );
 
-        context.fillStyle = "#070a0d";
+        // Boots
+        ctx.fillStyle = "#07090a";
 
-        context.fillRect(
+        ctx.fillRect(
+            -11,
+            21,
+            10,
+            5
+        );
+
+        ctx.fillRect(
             1,
+            21,
+            11,
+            5
+        );
+
+        // Hips
+        ctx.fillStyle = "#252b2f";
+
+        ctx.fillRect(
+            -11,
+            4,
+            22,
+            9
+        );
+
+        // Heavy torso
+        ctx.fillStyle = "#181d21";
+
+        ctx.beginPath();
+
+        ctx.moveTo(-11, -12);
+        ctx.lineTo(11, -12);
+        ctx.lineTo(13, 5);
+        ctx.lineTo(-13, 5);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        // Vest
+        ctx.fillStyle = "#30373b";
+
+        ctx.fillRect(
+            -10,
+            -8,
+            20,
+            13
+        );
+
+        // Side equipment
+        ctx.fillStyle = "#0c1013";
+
+        ctx.fillRect(
+            -14,
+            -3,
+            4,
+            11
+        );
+
+        ctx.fillRect(
+            10,
+            -3,
+            4,
+            11
+        );
+
+        // Shoulders
+        ctx.fillStyle = "#1b2024";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            -12,
+            -8,
+            5,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.arc(
+            12,
+            -8,
+            5,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        // Arms
+        ctx.fillRect(
+            -15,
+            -5,
+            6,
+            16
+        );
+
+        ctx.fillRect(
+            9,
+            -5,
+            6,
+            16
+        );
+
+        // Gloves
+        ctx.fillStyle = "#080b0d";
+
+        ctx.beginPath();
+
+        ctx.arc(
             -12,
             12,
-            7
+            3,
+            0,
+            Math.PI * 2
         );
 
-        context.fillStyle = "#596875";
+        ctx.arc(
+            12,
+            12,
+            3,
+            0,
+            Math.PI * 2
+        );
 
-        context.fillRect(
+        ctx.fill();
+
+        // Neck
+        ctx.fillStyle = "#101416";
+
+        ctx.fillRect(
+            -4,
+            -16,
+            8,
+            5
+        );
+
+        // Head
+        ctx.fillStyle = "#111518";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            0,
+            -21,
+            8,
+            8,
+            0,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        // Helmet
+        ctx.fillStyle = "#252c30";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -23,
+            9,
+            Math.PI,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        // Dark visor
+        ctx.fillStyle = "#050708";
+
+        ctx.fillRect(
+            -7,
+            -21,
+            14,
+            4
+        );
+
+        // Back equipment
+        ctx.fillStyle = "#0a0d0f";
+
+        ctx.fillRect(
+            -14,
+            -7,
             4,
-            -10,
-            7,
-            3
+            15
         );
 
-        context.strokeStyle =
-            "rgba(110, 130, 145, 0.4)";
-
-        context.strokeRect(
-            -9,
-            -11,
-            18,
-            22
+        ctx.fillRect(
+            10,
+            -7,
+            4,
+            15
         );
 
-        context.restore();
+        ctx.restore();
     }
 }
