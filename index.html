@@ -1,0 +1,190 @@
+!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>THE DARK JEWEL</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <main id="app">
+
+        <!-- MAIN MENU -->
+
+        <section
+            id="mainMenu"
+            class="screen active"
+        >
+
+            <div class="background-effect"></div>
+
+            <header class="title-area">
+
+                <div class="studio-label">
+                    W.B. STUDIOS
+                </div>
+
+                <h1>
+                    THE
+                    <span>DARK JEWEL</span>
+                </h1>
+
+                <p class="subtitle">
+                    OPERATION // NO DARK
+                </p>
+
+            </header>
+
+            <nav class="main-menu">
+
+                <button
+                    id="startButton"
+                    class="menu-button"
+                >
+                    INICIAR
+                </button>
+
+                <button
+                    id="settingsButton"
+                    class="menu-button"
+                >
+                    CONFIGURAÇÕES
+                </button>
+
+                <button
+                    id="creditsButton"
+                    class="menu-button"
+                >
+                    CRÉDITOS
+                </button>
+
+                <button
+                    id="exitButton"
+                    class="menu-button"
+                >
+                    SAIR
+                </button>
+
+            </nav>
+
+            <footer class="menu-footer">
+                PROTOTYPE 0.1
+            </footer>
+
+        </section>
+
+
+        <!-- SETTINGS -->
+
+        <section
+            id="settingsScreen"
+            class="screen hidden"
+        >
+
+            <div class="panel">
+
+                <h2>CONFIGURAÇÕES</h2>
+
+                <p class="panel-description">
+                    Configurações básicas do sistema.
+                </p>
+
+                <div class="setting-row">
+
+                    <span>
+                        ÁUDIO
+                    </span>
+
+                    <button
+                        id="audioButton"
+                        class="small-button"
+                    >
+                        LIGADO
+                    </button>
+
+                </div>
+
+                <button
+                    id="settingsBackButton"
+                    class="menu-button"
+                >
+                    VOLTAR
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- CREDITS -->
+
+        <section
+            id="creditsScreen"
+            class="screen hidden"
+        >
+
+            <div class="panel">
+
+                <h2>CRÉDITOS</h2>
+
+                <div class="credits-content">
+
+                    <p>
+                        Autor: O Escritor
+                    </p>
+
+                    <p>
+                        Criador: Felipe
+                    </p>
+
+                    <p>
+                        W.B. STUDIOS
+                    </p>
+
+                    <p>
+                        THE DARK JEWEL
+                    </p>
+
+                </div>
+
+                <button
+                    id="creditsBackButton"
+                    class="menu-button"
+                >
+                    VOLTAR
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="systemMessage"
+            class="system-message hidden"
+        ></div>
+
+    </main>
+
+
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
