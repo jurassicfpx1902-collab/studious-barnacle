@@ -3,18 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
     <title>THE DARK JEWEL</title>
 
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -23,103 +19,59 @@
 
         <!-- MAIN MENU -->
 
-        <section
-            id="mainMenu"
-            class="screen active"
-        >
+        <section id="main-menu" class="screen active">
 
-            <div class="background-effect"></div>
+            <div class="studio-label">W.B. STUDIOS</div>
 
-            <header class="title-area">
+            <h1>
+                <span>THE</span>
+                DARK JEWEL
+            </h1>
 
-                <div class="studio-label">
-                    W.B. STUDIOS
-                </div>
+            <div class="subtitle">
+                OPERATION // NO DARK
+            </div>
 
-                <h1>
-                    THE
-                    <span>DARK JEWEL</span>
-                </h1>
+            <div class="menu-buttons">
 
-                <p class="subtitle">
-                    OPERATION // NO DARK
-                </p>
-
-            </header>
-
-            <nav class="main-menu">
-
-                <button
-                    id="startButton"
-                    class="menu-button"
-                >
+                <button data-action="start">
                     INICIAR
                 </button>
 
-                <button
-                    id="settingsButton"
-                    class="menu-button"
-                >
+                <button data-action="settings">
                     CONFIGURAÇÕES
                 </button>
 
-                <button
-                    id="creditsButton"
-                    class="menu-button"
-                >
+                <button data-action="credits">
                     CRÉDITOS
                 </button>
 
-                <button
-                    id="exitButton"
-                    class="menu-button"
-                >
+                <button data-action="exit">
                     SAIR
                 </button>
 
-            </nav>
+            </div>
 
-            <footer class="menu-footer">
-                PROTOTYPE 0.1
-            </footer>
+            <div class="prototype-label">
+                PROTOTYPE 0.2
+            </div>
 
         </section>
 
 
         <!-- SETTINGS -->
 
-        <section
-            id="settingsScreen"
-            class="screen hidden"
-        >
+        <section id="settings-screen" class="screen">
 
             <div class="panel">
 
                 <h2>CONFIGURAÇÕES</h2>
 
-                <p class="panel-description">
-                    Configurações básicas do sistema.
-                </p>
+                <button id="audio-toggle">
+                    ÁUDIO: ATIVADO
+                </button>
 
-                <div class="setting-row">
-
-                    <span>
-                        ÁUDIO
-                    </span>
-
-                    <button
-                        id="audioButton"
-                        class="small-button"
-                    >
-                        LIGADO
-                    </button>
-
-                </div>
-
-                <button
-                    id="settingsBackButton"
-                    class="menu-button"
-                >
+                <button data-action="back">
                     VOLTAR
                 </button>
 
@@ -130,39 +82,22 @@
 
         <!-- CREDITS -->
 
-        <section
-            id="creditsScreen"
-            class="screen hidden"
-        >
+        <section id="credits-screen" class="screen">
 
-            <div class="panel">
+            <div class="panel credits">
 
-                <h2>CRÉDITOS</h2>
+                <h2>THE DARK JEWEL</h2>
 
-                <div class="credits-content">
+                <p>Autor: <strong>O Escritor</strong></p>
+                <p>Criador: <strong>Felipe</strong></p>
 
-                    <p>
-                        Autor: O Escritor
-                    </p>
+                <div class="credits-line"></div>
 
-                    <p>
-                        Criador: Felipe
-                    </p>
+                <p>W.B. STUDIOS</p>
+                <p>OPERATION // NO DARK</p>
+                <p>PROTOTYPE 0.2</p>
 
-                    <p>
-                        W.B. STUDIOS
-                    </p>
-
-                    <p>
-                        THE DARK JEWEL
-                    </p>
-
-                </div>
-
-                <button
-                    id="creditsBackButton"
-                    class="menu-button"
-                >
+                <button data-action="back">
                     VOLTAR
                 </button>
 
@@ -171,19 +106,119 @@
         </section>
 
 
-        <!-- MESSAGE -->
+        <!-- RADIO -->
 
-        <div
-            id="systemMessage"
-            class="system-message hidden"
-        ></div>
+        <section id="radio-screen" class="screen">
+
+            <div class="radio-panel">
+
+                <div class="radio-header">
+                    RADIO // SECURE CHANNEL
+                </div>
+
+                <div class="radio-status">
+                    CONNECTION ESTABLISHED
+                </div>
+
+                <div class="radio-speaker">
+                    KATHERINE
+                </div>
+
+                <p id="radio-message"></p>
+
+                <button id="radio-continue">
+                    CONTINUAR
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- GAME -->
+
+        <section id="game-screen" class="screen game-screen">
+
+            <div id="game-wrapper">
+
+                <canvas id="game-canvas" width="960" height="540"></canvas>
+
+                <div id="hud">
+
+                    <div class="hud-top">
+
+                        <div>
+                            MISSION 01 // NO DARK
+                        </div>
+
+                        <div id="detection-status">
+                            STATUS // NORMAL
+                        </div>
+
+                    </div>
+
+                    <div id="objective-panel">
+
+                        <span>OBJECTIVE</span>
+
+                        <strong id="objective-text">
+                            RECUPERE O DISPOSITIVO DE INFORMAÇÃO
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div id="joystick-zone">
+
+                    <div id="joystick-base">
+                        <div id="joystick-stick"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- GAME OVER -->
+
+        <section id="gameover-screen" class="screen">
+
+            <div id="gameover-content">
+
+                <div class="failure-code">
+                    OPERATION // FAILED
+                </div>
+
+                <h2>MISSÃO FALHOU</h2>
+
+                <p>
+                    VOCÊ FALHOU EM RECUPERAR AS
+                    INFORMAÇÕES SOBRE A DARK OBSIDIAN
+                </p>
+
+                <div class="gameover-buttons">
+
+                    <button id="restart-button">
+                        REINICIAR
+                    </button>
+
+                    <button id="menu-button">
+                        MENU PRINCIPAL
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
 
     </main>
 
-
-    <script src="js/audio.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 
 </body>
 
