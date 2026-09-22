@@ -1,77 +1,188 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
-    <title>THE DARK JEWEL</title>
+    <meta name="theme-color" content="#05080d">
+
+    <title>THE DARK JEWEL — Prototype 0.3</title>
 
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <main id="app">
+    <main id="gameApp">
 
-        <!-- MAIN MENU -->
+        <!-- =========================================
+             MAIN MENU
+        ========================================== -->
 
-        <section id="main-menu" class="screen active">
+        <section id="menuScreen" class="screen active">
 
-            <div class="studio-label">W.B. STUDIOS</div>
+            <div class="menuBackground"></div>
 
-            <h1>
-                <span>THE</span>
-                DARK JEWEL
-            </h1>
+            <div class="menuContainer">
 
-            <div class="subtitle">
-                OPERATION // NO DARK
+                <div class="studioLabel">
+                    W.B. STUDIOS
+                </div>
+
+                <header class="gameLogo">
+                    <div class="logoBlue">THE DARK</div>
+                    <div class="logoRed">JEWEL</div>
+                </header>
+
+                <div class="operationTitle">
+                    OPERATION // NO DARK
+                </div>
+
+                <div class="menuLine"></div>
+
+                <nav id="mainMenu" class="menuButtons">
+
+                    <button
+                        id="startMissionButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        INICIAR
+                    </button>
+
+                    <button
+                        id="settingsButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        CONFIGURAÇÕES
+                    </button>
+
+                    <button
+                        id="creditsButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        CRÉDITOS
+                    </button>
+
+                    <button
+                        id="exitButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        SAIR
+                    </button>
+
+                </nav>
+
+                <div class="menuFooter">
+                    PROTOTYPE 0.3
+                </div>
+
             </div>
 
-            <div class="menu-buttons">
+        </section>
 
-                <button data-action="start">
-                    INICIAR
-                </button>
 
-                <button data-action="settings">
+        <!-- =========================================
+             SETTINGS
+        ========================================== -->
+
+        <section id="settingsScreen" class="screen">
+
+            <div class="interfacePanel">
+
+                <div class="panelTitle">
                     CONFIGURAÇÕES
+                </div>
+
+                <div class="panelLine"></div>
+
+                <div class="settingRow">
+                    <span>AUDIO</span>
+
+                    <button
+                        id="audioToggleButton"
+                        class="smallButton"
+                        type="button"
+                    >
+                        ATIVADO
+                    </button>
+                </div>
+
+                <div class="settingRow">
+                    <span>DIFICULDADE</span>
+
+                    <button
+                        id="difficultyButton"
+                        class="smallButton"
+                        type="button"
+                    >
+                        NORMAL
+                    </button>
+                </div>
+
+                <button
+                    id="settingsBackButton"
+                    class="menuButton backButton"
+                    type="button"
+                >
+                    VOLTAR
                 </button>
 
-                <button data-action="credits">
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             CREDITS
+        ========================================== -->
+
+        <section id="creditsScreen" class="screen">
+
+            <div class="interfacePanel creditsPanel">
+
+                <div class="panelTitle">
                     CRÉDITOS
-                </button>
+                </div>
 
-                <button data-action="exit">
-                    SAIR
-                </button>
+                <div class="panelLine"></div>
 
-            </div>
+                <div class="creditsContent">
 
-            <div class="prototype-label">
-                PROTOTYPE 0.2
-            </div>
+                    <p>THE DARK JEWEL</p>
 
-        </section>
+                    <p>
+                        Autor:<br>
+                        <strong>O Escritor</strong>
+                    </p>
 
+                    <p>
+                        Criador:<br>
+                        <strong>Felipe</strong>
+                    </p>
 
-        <!-- SETTINGS -->
+                    <p>
+                        OPERATION // NO DARK
+                    </p>
 
-        <section id="settings-screen" class="screen">
+                    <p>
+                        PROTOTYPE 0.3
+                    </p>
 
-            <div class="panel">
+                </div>
 
-                <h2>CONFIGURAÇÕES</h2>
-
-                <button id="audio-toggle">
-                    ÁUDIO: ATIVADO
-                </button>
-
-                <button data-action="back">
+                <button
+                    id="creditsBackButton"
+                    class="menuButton backButton"
+                    type="button"
+                >
                     VOLTAR
                 </button>
 
@@ -80,53 +191,172 @@
         </section>
 
 
-        <!-- CREDITS -->
+        <!-- =========================================
+             RADIO
+        ========================================== -->
 
-        <section id="credits-screen" class="screen">
+        <section id="radioScreen" class="screen radioScreen">
 
-            <div class="panel credits">
+            <div class="radioNoise"></div>
 
-                <h2>THE DARK JEWEL</h2>
+            <div class="radioPanel">
 
-                <p>Autor: <strong>O Escritor</strong></p>
-                <p>Criador: <strong>Felipe</strong></p>
-
-                <div class="credits-line"></div>
-
-                <p>W.B. STUDIOS</p>
-                <p>OPERATION // NO DARK</p>
-                <p>PROTOTYPE 0.2</p>
-
-                <button data-action="back">
-                    VOLTAR
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- RADIO -->
-
-        <section id="radio-screen" class="screen">
-
-            <div class="radio-panel">
-
-                <div class="radio-header">
+                <div class="radioHeader">
                     RADIO // SECURE CHANNEL
                 </div>
 
-                <div class="radio-status">
-                    CONNECTION ESTABLISHED
+                <div class="radioSignal">
+                    ● SIGNAL CONNECTED
                 </div>
 
-                <div class="radio-speaker">
+                <div class="radioSpeaker">
                     KATHERINE
                 </div>
 
-                <p id="radio-message"></p>
+                <div
+                    id="radioMessage"
+                    class="radioMessage"
+                >
+                    —
+                </div>
 
-                <button id="radio-continue">
+                <div class="radioControls">
+
+                    <button
+                        id="radioContinueButton"
+                        class="smallButton"
+                        type="button"
+                    >
+                        CONTINUAR
+                    </button>
+
+                    <button
+                        id="radioSkipButton"
+                        class="smallButton"
+                        type="button"
+                    >
+                        PULAR
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             GAMEPLAY
+        ========================================== -->
+
+        <section id="gameScreen" class="screen gameScreen">
+
+            <canvas
+                id="gameCanvas"
+                width="960"
+                height="540"
+            ></canvas>
+
+
+            <!-- GAME HUD -->
+
+            <div id="gameHud" class="gameHud">
+
+                <div class="hudMission">
+                    MISSION 01 // NO DARK
+                </div>
+
+                <div class="hudObjectiveLabel">
+                    OBJETIVO
+                </div>
+
+                <div
+                    id="objectiveText"
+                    class="hudObjective"
+                >
+                    RECUPERE O ARQUIVO
+                </div>
+
+                <div
+                    id="alertIndicator"
+                    class="alertIndicator hidden"
+                >
+                    ALERTA
+                </div>
+
+                <div
+                    id="interactionHint"
+                    class="interactionHint hidden"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <!-- VIRTUAL JOYSTICK -->
+
+            <div
+                id="joystickContainer"
+                class="joystickContainer"
+            >
+
+                <div
+                    id="joystickBase"
+                    class="joystickBase"
+                >
+
+                    <div
+                        id="joystickKnob"
+                        class="joystickKnob"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTEXT ACTION -->
+
+            <button
+                id="actionButton"
+                class="actionButton hidden"
+                type="button"
+            >
+                NEUTRALIZAR
+            </button>
+
+        </section>
+
+
+        <!-- =========================================
+             MISSION COMPLETE
+        ========================================== -->
+
+        <section
+            id="missionCompleteScreen"
+            class="screen resultScreen"
+        >
+
+            <div class="resultPanel">
+
+                <div class="resultTitle">
+                    MISSÃO CONCLUÍDA
+                </div>
+
+                <div class="resultLine"></div>
+
+                <div class="resultText">
+                    ARQUIVO RECUPERADO
+                    <br>
+                    EXTRAÇÃO CONFIRMADA
+                </div>
+
+                <button
+                    id="missionCompleteButton"
+                    class="menuButton"
+                    type="button"
+                >
                     CONTINUAR
                 </button>
 
@@ -135,78 +365,46 @@
         </section>
 
 
-        <!-- GAME -->
+        <!-- =========================================
+             GAME OVER
+        ========================================== -->
 
-        <section id="game-screen" class="screen game-screen">
+        <section
+            id="gameOverScreen"
+            class="screen gameOverScreen"
+        >
 
-            <div id="game-wrapper">
+            <div class="gameOverNoise"></div>
 
-                <canvas id="game-canvas" width="960" height="540"></canvas>
+            <div class="gameOverPanel">
 
-                <div id="hud">
-
-                    <div class="hud-top">
-
-                        <div>
-                            MISSION 01 // NO DARK
-                        </div>
-
-                        <div id="detection-status">
-                            STATUS // NORMAL
-                        </div>
-
-                    </div>
-
-                    <div id="objective-panel">
-
-                        <span>OBJECTIVE</span>
-
-                        <strong id="objective-text">
-                            RECUPERE O DISPOSITIVO DE INFORMAÇÃO
-                        </strong>
-
-                    </div>
-
+                <div class="gameOverTitle">
+                    MISSÃO FALHOU
                 </div>
 
-
-                <div id="joystick-zone">
-
-                    <div id="joystick-base">
-                        <div id="joystick-stick"></div>
-                    </div>
-
+                <div
+                    id="gameOverMessage"
+                    class="gameOverMessage"
+                >
+                    Você falhou em recuperar as
+                    informações sobre a Dark Obsidian.
                 </div>
 
-            </div>
+                <div class="gameOverButtons">
 
-        </section>
-
-
-        <!-- GAME OVER -->
-
-        <section id="gameover-screen" class="screen">
-
-            <div id="gameover-content">
-
-                <div class="failure-code">
-                    OPERATION // FAILED
-                </div>
-
-                <h2>MISSÃO FALHOU</h2>
-
-                <p>
-                    VOCÊ FALHOU EM RECUPERAR AS
-                    INFORMAÇÕES SOBRE A DARK OBSIDIAN
-                </p>
-
-                <div class="gameover-buttons">
-
-                    <button id="restart-button">
-                        REINICIAR
+                    <button
+                        id="restartMissionButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        TENTAR NOVAMENTE
                     </button>
 
-                    <button id="menu-button">
+                    <button
+                        id="gameOverMenuButton"
+                        class="menuButton"
+                        type="button"
+                    >
                         MENU PRINCIPAL
                     </button>
 
@@ -216,10 +414,43 @@
 
         </section>
 
+
+        <!-- =========================================
+             SYSTEM MESSAGE
+        ========================================== -->
+
+        <div
+            id="systemMessage"
+            class="systemMessage hidden"
+            aria-live="polite"
+        >
+        </div>
+
     </main>
 
-    <script type="module" src="js/main.js"></script>
+
+    <!-- =============================================
+         JAVASCRIPT SYSTEMS
+    ============================================== -->
+
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemy.js"></script>
+    <script src="js/enemyAI.js"></script>
+    <script src="js/collision.js"></script>
+    <script src="js/vision.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/mission.js"></script>
+    <script src="js/radio.js"></script>
+    <script src="js/joystick.js"></script>
+    <script src="js/interaction.js"></script>
+    <script src="js/extraction.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/gameover.js"></script>
+
+    <!-- MAIN MUST LOAD LAST -->
+    <script src="js/main.js"></script>
 
 </body>
-
 </html>
