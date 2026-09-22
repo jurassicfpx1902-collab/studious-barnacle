@@ -1,16 +1,34 @@
-"use strict";
+import { AudioSystem } from "./audio.js";
+import { MusicSystem } from "./music.js";
+import { UISystem } from "./ui.js";
+import { Game } from "./game.js";
 
-window.addEventListener(
-    "DOMContentLoaded",
-    () => {
+const audioSystem =
+    new AudioSystem();
 
-        AudioSystem.init();
+const musicSystem =
+    new MusicSystem();
 
-        UISystem.init();
+const uiSystem =
+    new UISystem(
+        audioSystem
+    );
 
-        console.log(
-            "[THE DARK JEWEL] Prototype 0.1 initialized."
-        );
+const game =
+    new Game(
+        uiSystem,
+        audioSystem,
+        musicSystem
+    );
 
-    }
+uiSystem.initialize(
+    game
+);
+
+audioSystem.initialize();
+
+musicSystem.initialize();
+
+console.log(
+    "THE DARK JEWEL // PROTOTYPE 0.2 INITIALIZED"
 );
