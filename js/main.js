@@ -1,163 +1,220 @@
 class GameController {
-    constructor() {
-        this.canvas = document.getElementById("game-canvas");
-        this.ctx = this.canvas
+
+constructor() {
+
+    this.canvas =
+        document.getElementById(
+            "game-canvas"
+        );
+
+    this.ctx =
+        this.canvas
             ? this.canvas.getContext("2d")
             : null;
 
-        this.running = false;
-        this.lastTime = 0;
+    this.running = false;
 
-        this.enemies = [];
-        this.enemyAI = null;
+    this.lastTime = 0;
 
-        this.difficulty = "NORMAL";
+    this.enemies = [];
 
-        this.bindButtons();
+    this.enemyAI = null;
+
+    this.difficulty = "NORMAL";
+}
+
+init() {
+
+    uiManager.init();
+
+    interactionSystem.init();
+
+    this.resizeCanvas();
+
+    window.addEventListener(
+        "resize",
+        () => this.resizeCanvas()
+    );
+
+    this.bindButtons();
+
+    this.showMenu();
+
+    requestAnimationFrame(
+        time => this.loop(time)
+    );
+}
+
+resizeCanvas() {
+
+    if (!this.canvas) {
+        return;
     }
 
-    init() {
-        uiManager.init();
+    /*
+     * Keep the internal game resolution fixed.
+     * CSS controls the visual size on mobile.
+     */
 
-        interactionSystem.init();
+    this.canvas.width = 800;
+    this.canvas.height = 600;
+}
 
-        this.resizeCanvas();
+bindButtons() {
 
-        window.addEventListener(
-            "resize",
-            () => this.resizeCanvas()
+    const startButton =
+        document.getElementById(
+            "start-button"
         );
 
-        this.showMenu();
-
-        requestAnimationFrame(
-            time => this.loop(time)
-        );
-    }
-
-    resizeCanvas() {
-        if (!this.canvas) return;
-
-        const rect = this.canvas.getBoundingClientRect();
-
-        const width = Math.max(320, Math.floor(rect.width));
-        const height = Math.max(240, Math.floor(rect.height));
-
-        this.canvas.width = width;
-        this.canvas.height = height;
-    }
-
-    bindButtons() {
-        const startButton =
-            document.getElementById("start-button");
-
-        const settingsButton =
-            document.getElementById("settings-button");
-
-        const creditsButton =
-            document.getElementById("credits-button");
-
-        const exitButton =
-            document.getElementById("exit-button");
-
-        const continueButton =
-            document.getElementById("radio-continue");
-
-        const skipButton =
-            document.getElementById("radio-skip");
-
-        const backSettings =
-            document.getElementById("settings-back");
-
-        const backCredits =
-            document.getElementById("credits-back");
-
-        const retryButton =
-            document.getElementById("retry-button");
-
-        const gameOverMenu =
-            document.getElementById("gameover-menu");
-
-        const completeButton =
-            document.getElementById("complete-button");
-
-        startButton?.addEventListener(
-            "click",
-            () => this.beginMission()
+    const settingsButton =
+        document.getElementById(
+            "settings-button"
         );
 
-        settingsButton?.addEventListener(
-            "click",
-            () => this.showSettings()
+    const creditsButton =
+        document.getElementById(
+            "credits-button"
         );
 
-        creditsButton?.addEventListener(
-            "click",
-            () => this.showCredits()
+    const exitButton =
+        document.getElementById(
+            "exit-button"
         );
 
-        exitButton?.addEventListener(
-            "click",
-            () => this.showMenu()
+    const continueButton =
+        document.getElementById(
+            "radio-continue"
         );
 
-        continueButton?.addEventListener(
-            "click",
-            () => radioSystem.next()
+    const skipButton =
+        document.getElementById(
+            "radio-skip"
         );
 
-        skipButton?.addEventListener(
-            "click",
-            () => radioSystem.finish()
+    const backSettings =
+        document.getElementById(
+            "settings-back"
         );
 
-        backSettings?.addEventListener(
-            "click",
-            () => this.showMenu()
+    const backCredits =
+        document.getElementById(
+            "credits-back"
         );
 
-        backCredits?.addEventListener(
-            "click",
-            () => this.showMenu()
+    const retryButton =
+        document.getElementById(
+            "retry-button"
         );
 
-        retryButton?.addEventListener(
-            "click",
-            () => gameOverSystem.retry()
+    const gameOverMenu =
+        document.getElementById(
+            "gameover-menu"
         );
 
-        gameOverMenu?.addEventListener(
-            "click",
-            () => this.showMenu()
+    const completeButton =
+        document.getElementById(
+            "complete-button"
         );
 
-        completeButton?.addEventListener(
-            "click",
-            () => this.showMenu()
+
+    startButton?.addEventListener(
+        "click",
+        () => this.beginMission()
+    );
+
+    settingsButton?.addEventListener(
+        "click",
+        () => this.showSettings()
+    );
+
+    creditsButton?.addEventListener(
+        "click",
+        () => this.showCredits()
+    );
+
+    exitButton?.addEventListener(
+        "click",
+        () => this.showMenu()
+    );
+
+    continueButton?.addEventListener(
+        "click",
+        () => radioSystem.next()
+    );
+
+    skipButton?.addEventListener(
+        "click",
+        () => radioSystem.finish()
+    );
+
+    backSettings?.addEventListener(
+        "click",
+        () => this.showMenu()
+    );
+
+    backCredits?.addEventListener(
+        "click",
+        () => this.showMenu()
+    );
+
+    retryButton?.addEventListener(
+        "click",
+        () => gameOverSystem.retry()
+    );
+
+    gameOverMenu?.addEventListener(
+        "click",
+        () => gameOverSystem.returnToMenu()
+    );
+
+    completeButton?.addEventListener(
+        "click",
+        () => this.showMenu()
+    );
+
+
+    /*
+     * AUDIO
+     */
+
+    const audioToggle =
+        document.getElementById(
+            "audio-toggle"
         );
 
-        const audioToggle =
-            document.getElementById("audio-toggle");
+    audioToggle?.addEventListener(
+        "change",
+        event => {
 
-        audioToggle?.addEventListener(
-            "change",
-            event => {
-                audioSystem.setEnabled(
-                    event.target.checked
-                );
+            audioSystem.setEnabled(
+                event.target.checked
+            );
 
-                if (event.target.checked) {
-                    audioSystem.startMusic();
-                }
+            if (
+                event.target.checked
+            ) {
+
+                audioSystem.startMusic();
             }
-        );
+        }
+    );
 
-        document.querySelectorAll(
+
+    /*
+     * DIFFICULTY
+     */
+
+    document
+        .querySelectorAll(
             "[data-difficulty]"
-        ).forEach(button => {
+        )
+        .forEach(button => {
+
             button.addEventListener(
                 "click",
                 () => {
+
                     this.difficulty =
                         button.dataset.difficulty;
 
@@ -166,235 +223,373 @@ class GameController {
                             "[data-difficulty]"
                         )
                         .forEach(item => {
-                            item.classList.remove("selected");
+
+                            item.classList.remove(
+                                "selected"
+                            );
                         });
 
-                    button.classList.add("selected");
+                    button.classList.add(
+                        "selected"
+                    );
 
                     audioSystem.playConfirm();
                 }
             );
         });
-    }
+}
 
-    showMenu() {
-        this.running = false;
+showMenu() {
 
-        audioSystem.init();
-        audioSystem.startMusic();
-        audioSystem.setIntensity("normal");
+    this.running = false;
 
-        uiManager.showScreen("menu-screen");
-    }
+    audioSystem.init();
 
-    showSettings() {
-        audioSystem.playConfirm();
+    audioSystem.startMusic();
 
-        uiManager.showScreen(
-            "settings-screen"
-        );
-    }
+    audioSystem.setIntensity(
+        "normal"
+    );
 
-    showCredits() {
-        audioSystem.playConfirm();
+    uiManager.showScreen(
+        "menu-screen"
+    );
+}
 
-        uiManager.showScreen(
-            "credits-screen"
-        );
-    }
+showSettings() {
 
-    beginMission() {
-        audioSystem.resume();
-        audioSystem.playConfirm();
+    audioSystem.playConfirm();
 
-        effectsSystem.triggerGlitch(0.25);
+    uiManager.showScreen(
+        "settings-screen"
+    );
+}
 
-        uiManager.showScreen(
-            "radio-screen"
-        );
+showCredits() {
 
-        radioSystem.start();
-    }
+    audioSystem.playConfirm();
 
-    startGameplay() {
-        uiManager.showScreen(
-            "game-screen"
-        );
+    uiManager.showScreen(
+        "credits-screen"
+    );
+}
 
-        this.createMission();
+beginMission() {
 
-        missionSystem.start();
+    audioSystem.resume();
 
-        this.running = true;
+    audioSystem.playConfirm();
 
-        audioSystem.startMusic();
-    }
+    effectsSystem.triggerGlitch(
+        0.25
+    );
 
-    createMission() {
-        const count =
-            this.difficulty === "EXTREMO"
-                ? 3
-                : 2;
+    uiManager.showScreen(
+        "radio-screen"
+    );
 
-        this.enemies = [];
+    radioSystem.start();
+}
+
+startGameplay() {
+
+    uiManager.showScreen(
+        "game-screen"
+    );
+
+    this.createMission();
+
+    missionSystem.start();
+
+    this.running = true;
+
+    audioSystem.startMusic();
+}
+
+createMission() {
+
+    const enemyCount =
+        this.difficulty === "EXTREMO"
+            ? 3
+            : 2;
+
+    this.enemies = [];
+
+
+    /*
+     * ENEMY 01
+     */
+
+    this.enemies.push(
+
+        new Enemy(
+            275,
+            145,
+            [
+                {
+                    x: 275,
+                    y: 145
+                },
+                {
+                    x: 275,
+                    y: 360
+                }
+            ]
+        )
+    );
+
+
+    /*
+     * ENEMY 02
+     */
+
+    this.enemies.push(
+
+        new Enemy(
+            430,
+            440,
+            [
+                {
+                    x: 430,
+                    y: 440
+                },
+                {
+                    x: 600,
+                    y: 440
+                }
+            ]
+        )
+    );
+
+
+    /*
+     * EXTREME MODE
+     */
+
+    if (enemyCount >= 3) {
 
         this.enemies.push(
+
             new Enemy(
-                300,
-                150,
+                585,
+                145,
                 [
-                    { x: 280, y: 150 },
-                    { x: 280, y: 380 }
+                    {
+                        x: 545,
+                        y: 145
+                    },
+                    {
+                        x: 620,
+                        y: 330
+                    }
                 ]
             )
         );
+    }
 
-        this.enemies.push(
-            new Enemy(
-                500,
-                430,
-                [
-                    { x: 500, y: 430 },
-                    { x: 690, y: 430 }
-                ]
-            )
+
+    this.enemyAI =
+        new EnemyAI(
+            this.enemies
         );
 
-        if (count >= 3) {
-            this.enemies.push(
-                new Enemy(
-                    650,
-                    150,
-                    [
-                        { x: 630, y: 150 },
-                        { x: 700, y: 280 }
-                    ]
-                )
-            );
-        }
+    extractionSystem.reset();
+}
 
-        this.enemyAI =
-            new EnemyAI(this.enemies);
+update(delta) {
 
-        extractionSystem.reset();
+    if (!this.running) {
+        return;
     }
 
-    update(delta) {
-        if (!this.running) return;
+    const input =
+        joystick.getInput();
 
-        const input =
-            joystick.getInput();
+    player.update(
+        input,
+        delta
+    );
 
-        player.update(input, delta);
+    collisionSystem.keepPlayerInside();
 
-        collisionSystem.keepPlayerInside();
+    this.enemyAI.update(
+        delta
+    );
 
-        this.enemyAI.update(delta);
+    missionSystem.update();
 
-        missionSystem.update();
+    interactionSystem.updateHint();
 
-        interactionSystem.updateHint();
+    effectsSystem.update(
+        delta
+    );
 
-        effectsSystem.update(delta);
+    this.updateAudioState();
+}
 
-        this.updateAudioState();
+updateAudioState() {
+
+    let state = "normal";
+
+    for (
+        const enemy of this.enemies
+    ) {
+
+        if (
+            enemy.state === "ALERT"
+        ) {
+
+            state = "alert";
+
+            break;
+        }
+
+        if (
+            enemy.state === "SEARCH"
+        ) {
+
+            state = "suspicious";
+        }
     }
 
-    updateAudioState() {
-        let state = "normal";
+    if (
+        missionSystem.objectiveCollected
+    ) {
 
-        for (const enemy of this.enemies) {
-            if (enemy.state === "ALERT") {
-                state = "alert";
-                break;
-            }
-
-            if (enemy.state === "SEARCH") {
-                state = "suspicious";
-            }
-        }
-
-        if (missionSystem.objectiveCollected) {
-            state = "extraction";
-        }
-
-        audioSystem.setIntensity(state);
+        state = "extraction";
     }
 
-    draw() {
-        if (!this.ctx) return;
+    audioSystem.setIntensity(
+        state
+    );
+}
 
-        const ctx = this.ctx;
+draw() {
 
-        ctx.clearRect(
-            0,
-            0,
-            this.canvas.width,
-            this.canvas.height
-        );
+    if (!this.ctx) {
+        return;
+    }
 
-        gameMap.draw(ctx);
+    const ctx = this.ctx;
 
-        for (const enemy of this.enemies) {
-            visionSystem.drawVision(
-                ctx,
-                enemy
-            );
-        }
+    ctx.clearRect(
+        0,
+        0,
+        this.canvas.width,
+        this.canvas.height
+    );
 
-        for (const enemy of this.enemies) {
-            enemy.draw(ctx);
-        }
 
-        player.draw(ctx);
+    /*
+     * MAP
+     */
 
-        effectsSystem.draw(
+    gameMap.draw(
+        ctx
+    );
+
+
+    /*
+     * ENEMY VISION
+     */
+
+    for (
+        const enemy of this.enemies
+    ) {
+
+        visionSystem.drawVision(
             ctx,
-            this.canvas.width,
-            this.canvas.height
+            enemy
         );
     }
 
-    loop(time) {
-        const delta =
-            Math.min(
-                (time - this.lastTime) / 1000,
-                0.05
-            );
 
-        this.lastTime = time;
+    /*
+     * ENEMIES
+     */
 
-        this.update(delta);
-        this.draw();
+    for (
+        const enemy of this.enemies
+    ) {
 
-        requestAnimationFrame(
-            nextTime => this.loop(nextTime)
+        enemy.draw(
+            ctx
         );
     }
 
-    showMissionComplete() {
-        this.running = false;
 
-        uiManager.showScreen(
-            "mission-complete-screen"
+    /*
+     * PLAYER
+     */
+
+    player.draw(
+        ctx
+    );
+
+
+    /*
+     * EFFECTS
+     */
+
+    effectsSystem.draw(
+        ctx,
+        this.canvas.width,
+        this.canvas.height
+    );
+}
+
+loop(time) {
+
+    const delta =
+        Math.min(
+            (time - this.lastTime) /
+            1000,
+            0.05
         );
-    }
 
-    showGameOver() {
-        this.running = false;
+    this.lastTime =
+        time;
 
-        uiManager.showScreen(
-            "game-over-screen"
-        );
-    }
+    this.update(
+        delta
+    );
+
+    this.draw();
+
+    requestAnimationFrame(
+        nextTime =>
+            this.loop(nextTime)
+    );
+}
+
+showMissionComplete() {
+
+    this.running = false;
+
+    uiManager.showScreen(
+        "mission-complete-screen"
+    );
+}
+
+showGameOver() {
+
+    this.running = false;
+
+    uiManager.showScreen(
+        "game-over-screen"
+    );
+}
+
 }
 
 window.gameController =
-    new GameController();
+new GameController();
 
 window.addEventListener(
-    "load",
-    () => {
-        gameController.init();
-    }
+"load",
+() => {
+
+    gameController.init();
+}
+
 );
