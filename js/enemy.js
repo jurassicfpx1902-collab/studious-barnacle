@@ -1,294 +1,140 @@
 class Enemy {
-    constructor(x, y) {
+    constructor(x, y, patrolPoints = []) {
         this.x = x;
         this.y = y;
 
-        this.width = 25;
-        this.height = 45;
+        this.width = 28;
+        this.height = 42;
 
-        this.speed = 0.75;
+        this.speed = 65;
 
-        this.directionX = 0;
-        this.directionY = 1;
+        this.state = "PATROL";
+        this.patrolPoints = patrolPoints;
+        this.currentPoint = 0;
 
-        this.state = "patrol";
+        this.lastKnownX = x;
+        this.lastKnownY = y;
+
+        this.neutralized = false;
+        this.alertTimer = 0;
     }
 
-    update(targetX, targetY) {
-        if (this.state !== "patrol") {
+    update(delta) {
+        if (this.neutralized) return;
+
+        if (this.state === "PATROL") {
+            this.followPatrol(delta);
+        }
+
+        if (this.state === "SEARCH") {
+            this.moveToLastKnown(delta);
+        }
+
+        if (this.state === "ALERT") {
+            this.alertTimer -= delta;
+
+            if (this.alertTimer <= 0) {
+                this.state = "SEARCH";
+            }
+        }
+    }
+
+    followPatrol(delta) {
+        if (!this.patrolPoints.length) return;
+
+        const target = this.patrolPoints[this.currentPoint];
+
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 5) {
+            this.currentPoint =
+                (this.currentPoint + 1) % this.patrolPoints.length;
+
             return;
         }
 
-        const dx =
-            targetX - this.x;
+        this.x += (dx / distance) * this.speed * delta;
+        this.y += (dy / distance) * this.speed * delta;
+    }
 
-        const dy =
-            targetY - this.y;
+    moveToLastKnown(delta) {
+        const dx = this.lastKnownX - this.x;
+        const dy = this.lastKnownY - this.y;
 
-        const distance =
-            Math.hypot(dx, dy);
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (
-            distance > 80 &&
-            distance < 180
-        ) {
-            this.directionX =
-                dx / distance;
-
-            this.directionY =
-                dy / distance;
-
-            this.x +=
-                this.directionX *
-                this.speed;
-
-            this.y +=
-                this.directionY *
-                this.speed;
+        if (distance < 5) {
+            this.state = "PATROL";
+            return;
         }
+
+        this.x += (dx / distance) * this.speed * delta;
+        this.y += (dy / distance) * this.speed * delta;
+    }
+
+    setAlert(x, y) {
+        this.lastKnownX = x;
+        this.lastKnownY = y;
+        this.state = "ALERT";
+        this.alertTimer = 2.5;
+
+        audioSystem.playAlert();
+    }
+
+    neutralize() {
+        this.neutralized = true;
+        this.state = "NEUTRALIZED";
+
+        audioSystem.playNeutralize();
     }
 
     draw(ctx) {
         ctx.save();
 
-        ctx.translate(
-            this.x,
-            this.y
-        );
+        ctx.translate(this.x, this.y);
 
-        // Shadow
-        ctx.fillStyle =
-            "rgba(0, 0, 0, 0.45)";
+        ctx.fillStyle = this.neutralized
+            ? "#34383d"
+            : "#171a1e";
 
-        ctx.beginPath();
+        // Torso
+        ctx.fillRect(-11, -5, 22, 22);
 
-        ctx.ellipse(
-            0,
-            23,
-            15,
-            5,
-            0,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        // Legs
-        ctx.fillStyle = "#121619";
-
-        ctx.fillRect(
-            -10,
-            8,
-            8,
-            17
-        );
-
-        ctx.fillRect(
-            2,
-            8,
-            8,
-            17
-        );
-
-        // Boots
-        ctx.fillStyle = "#07090a";
-
-        ctx.fillRect(
-            -11,
-            21,
-            10,
-            5
-        );
-
-        ctx.fillRect(
-            1,
-            21,
-            11,
-            5
-        );
-
-        // Hips
-        ctx.fillStyle = "#252b2f";
-
-        ctx.fillRect(
-            -11,
-            4,
-            22,
-            9
-        );
-
-        // Heavy torso
-        ctx.fillStyle = "#181d21";
-
-        ctx.beginPath();
-
-        ctx.moveTo(-11, -12);
-        ctx.lineTo(11, -12);
-        ctx.lineTo(13, 5);
-        ctx.lineTo(-13, 5);
-
-        ctx.closePath();
-
-        ctx.fill();
-
-        // Vest
-        ctx.fillStyle = "#30373b";
-
-        ctx.fillRect(
-            -10,
-            -8,
-            20,
-            13
-        );
-
-        // Side equipment
-        ctx.fillStyle = "#0c1013";
-
-        ctx.fillRect(
-            -14,
-            -3,
-            4,
-            11
-        );
-
-        ctx.fillRect(
-            10,
-            -3,
-            4,
-            11
-        );
-
-        // Shoulders
-        ctx.fillStyle = "#1b2024";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            -12,
-            -8,
-            5,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.arc(
-            12,
-            -8,
-            5,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        // Arms
-        ctx.fillRect(
-            -15,
-            -5,
-            6,
-            16
-        );
-
-        ctx.fillRect(
-            9,
-            -5,
-            6,
-            16
-        );
-
-        // Gloves
-        ctx.fillStyle = "#080b0d";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            -12,
-            12,
-            3,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.arc(
-            12,
-            12,
-            3,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        // Neck
-        ctx.fillStyle = "#101416";
-
-        ctx.fillRect(
-            -4,
-            -16,
-            8,
-            5
-        );
+        // Heavy vest
+        ctx.fillStyle = "#282d32";
+        ctx.fillRect(-13, -3, 26, 15);
 
         // Head
-        ctx.fillStyle = "#111518";
-
-        ctx.beginPath();
-
-        ctx.ellipse(
-            0,
-            -21,
-            8,
-            8,
-            0,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
+        ctx.fillStyle = "#101317";
+        ctx.fillRect(-8, -20, 16, 14);
 
         // Helmet
-        ctx.fillStyle = "#252c30";
+        ctx.fillStyle = "#090b0e";
+        ctx.fillRect(-10, -22, 20, 6);
 
-        ctx.beginPath();
+        // Arms
+        ctx.fillStyle = "#15181c";
+        ctx.fillRect(-17, -3, 6, 17);
+        ctx.fillRect(11, -3, 6, 17);
 
-        ctx.arc(
-            0,
-            -23,
-            9,
-            Math.PI,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        // Dark visor
-        ctx.fillStyle = "#050708";
-
-        ctx.fillRect(
-            -7,
-            -21,
-            14,
-            4
-        );
-
-        // Back equipment
-        ctx.fillStyle = "#0a0d0f";
-
-        ctx.fillRect(
-            -14,
-            -7,
-            4,
-            15
-        );
-
-        ctx.fillRect(
-            10,
-            -7,
-            4,
-            15
-        );
+        // Legs
+        ctx.fillRect(-9, 17, 7, 19);
+        ctx.fillRect(2, 17, 7, 19);
 
         ctx.restore();
     }
+
+    getBounds() {
+        return {
+            x: this.x - this.width / 2,
+            y: this.y - this.height / 2,
+            width: this.width,
+            height: this.height
+        };
+    }
 }
+
+window.Enemy = Enemy;
