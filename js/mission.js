@@ -1,60 +1,62 @@
-export class MissionSystem {
-
-    constructor(mapSystem) {
-
-        this.mapSystem = mapSystem;
-
-        this.state = "objective";
-
+class MissionSystem {
+    constructor() {
+        this.active = false;
         this.objectiveCollected = false;
         this.completed = false;
     }
 
-    update(player) {
+    start() {
+        this.active = true;
+        this.objectiveCollected = false;
+        this.completed = false;
 
-        if (
-            this.state === "objective" &&
-            player.distanceTo(
-                this.mapSystem.objective.x,
-                this.mapSystem.objective.y
-            ) < 30
-        ) {
+        player.reset(105, 300);
 
-            this.objectiveCollected = true;
-            this.state = "extraction";
+        gameMap.build();
 
-            return "objective-collected";
-        }
+        uiManager.setMissionText(
+            "RECUPERE O DISPOSITIVO DE INFORMAÇÃO"
+        );
 
-        if (
-            this.state === "extraction" &&
-            this.mapSystem.isInsideExtraction(
-                player.x,
-                player.y
-            )
-        ) {
-
-            this.completed = true;
-            this.state = "complete";
-
-            return "mission-complete";
-        }
-
-        return null;
+        audioSystem.playMissionStart();
     }
 
-    getObjectiveText() {
+    update() {
+        if (!this.active) return;
 
-        if (this.state === "objective") {
-
-            return "RECUPERE O DISPOSITIVO DE INFORMAÇÃO";
+        if (
+            !this.objectiveCollected &&
+            gameMap.isInsideZone(player, gameMap.objectiveZone)
+        ) {
+            this.collectObjective();
         }
 
-        if (this.state === "extraction") {
-
-            return "RETORNE À ÁREA DE EXTRAÇÃO";
+        if (
+            this.objectiveCollected &&
+            gameMap.isInsideZone(player, gameMap.extractionZone)
+        ) {
+            extractionSystem.complete();
         }
+    }
 
-        return "MISSÃO CONCLUÍDA";
+    collectObjective() {
+        this.objectiveCollected = true;
+
+        uiManager.setMissionText(
+            "RETORNE À ÁREA DE EXTRAÇÃO"
+        );
+
+        uiManager.showSystemMessage(
+            "DISPOSITIVO RECUPERADO"
+        );
+
+        audioSystem.playObjective();
+    }
+
+    finish() {
+        this.active = false;
+        this.completed = true;
     }
 }
+
+window.missionSystem = new MissionSystem();
