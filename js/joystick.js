@@ -1,132 +1,101 @@
-export class Joystick {
-
-    constructor(zoneElement, stickElement) {
-
-        this.zone = zoneElement;
-        this.stick = stickElement;
-
-        this.active = false;
+class Joystick {
+    constructor() {
+        this.element = document.getElementById("joystick");
+        this.knob = document.getElementById("joystick-knob");
 
         this.x = 0;
         this.y = 0;
 
-        this.maxDistance = 38;
+        this.active = false;
+        this.pointerId = null;
 
-        this.bindEvents();
+        this.setup();
     }
 
-    bindEvents() {
+    setup() {
+        if (!this.element) return;
 
-        this.zone.addEventListener(
+        this.element.addEventListener(
             "pointerdown",
-            (event) => {
-
-                event.preventDefault();
-
-                this.active = true;
-
-                this.zone.setPointerCapture(
-                    event.pointerId
-                );
-
-                this.updatePosition(event);
-            }
+            event => this.start(event)
         );
 
-        this.zone.addEventListener(
+        window.addEventListener(
             "pointermove",
-            (event) => {
-
-                if (!this.active) {
-                    return;
-                }
-
-                event.preventDefault();
-
-                this.updatePosition(event);
-            }
+            event => this.move(event)
         );
 
-        this.zone.addEventListener(
+        window.addEventListener(
             "pointerup",
-            (event) => {
-
-                event.preventDefault();
-
-                this.reset();
-            }
-        );
-
-        this.zone.addEventListener(
-            "pointercancel",
-            () => {
-
-                this.reset();
-            }
+            event => this.end(event)
         );
     }
 
-    updatePosition(event) {
+    start(event) {
+        this.active = true;
+        this.pointerId = event.pointerId;
 
-        const rect =
-            this.zone.getBoundingClientRect();
+        this.element.setPointerCapture?.(event.pointerId);
 
-        const centerX =
-            rect.left + rect.width / 2;
+        this.move(event);
+    }
 
-        const centerY =
-            rect.top + rect.height / 2;
+    move(event) {
+        if (!this.active) return;
 
-        let deltaX =
-            event.clientX - centerX;
+        const rect = this.element.getBoundingClientRect();
 
-        let deltaY =
-            event.clientY - centerY;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
 
-        const distance =
-            Math.hypot(
-                deltaX,
-                deltaY
-            );
+        let dx = event.clientX - centerX;
+        let dy = event.clientY - centerY;
 
-        if (
-            distance >
-            this.maxDistance
-        ) {
+        const radius = rect.width / 2;
 
-            const ratio =
-                this.maxDistance / distance;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-            deltaX *= ratio;
-            deltaY *= ratio;
+        if (distance > radius) {
+            dx = (dx / distance) * radius;
+            dy = (dy / distance) * radius;
         }
 
-        this.x =
-            deltaX / this.maxDistance;
+        this.x = dx / radius;
+        this.y = dy / radius;
 
-        this.y =
-            deltaY / this.maxDistance;
-
-        this.stick.style.transform =
-            `translate(${deltaX}px, ${deltaY}px)`;
+        if (this.knob) {
+            this.knob.style.transform =
+                `translate(${dx}px, ${dy}px)`;
+        }
     }
 
-    reset() {
+    end(event) {
+        if (!this.active) return;
+
+        if (
+            this.pointerId !== null &&
+            event.pointerId !== this.pointerId
+        ) {
+            return;
+        }
 
         this.active = false;
+        this.pointerId = null;
 
         this.x = 0;
         this.y = 0;
 
-        this.stick.style.transform =
-            "translate(0px, 0px)";
+        if (this.knob) {
+            this.knob.style.transform = "translate(0, 0)";
+        }
     }
 
-    getDirection() {
-
+    getInput() {
         return {
             x: this.x,
             y: this.y
         };
     }
 }
+
+window.joystick = new Joystick();
