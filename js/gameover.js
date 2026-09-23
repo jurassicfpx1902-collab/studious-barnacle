@@ -1,18 +1,36 @@
 class GameOverSystem {
-    show() {
-        audioSystem.playGameOver();
-        audioSystem.setIntensity("danger");
 
-        if (window.gameController) {
-            gameController.showGameOver();
-        }
-    }
+show() {
 
-    retry() {
-        if (window.gameController) {
-            gameController.startGameplay();
-        }
+    audioSystem.playGameOver();
+
+    audioSystem.setIntensity(
+        "danger"
+    );
+
+    if (window.gameController) {
+
+        gameController.showGameOver();
     }
 }
 
-window.gameOverSystem = new GameOverSystem();
+retry() {
+
+    if (window.gameController) {
+
+        gameController.startGameplay();
+    }
+}
+
+returnToMenu() {
+
+    if (window.gameController) {
+
+        gameController.showMenu();
+    }
+}
+
+}
+
+window.gameOverSystem =
+new GameOverSystem();
