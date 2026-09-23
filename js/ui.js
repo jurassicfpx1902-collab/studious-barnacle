@@ -1,221 +1,54 @@
-export class UISystem {
-
-    constructor(audioSystem) {
-
-        this.audioSystem = audioSystem;
-
-        this.screens = [
-            "main-menu",
-            "settings-screen",
-            "credits-screen",
-            "radio-screen",
-            "game-screen",
-            "gameover-screen"
-        ];
-
-        this.audioEnabled = true;
+class UIManager {
+    constructor() {
+        this.screens = {};
+        this.currentScreen = null;
     }
 
-    initialize(game) {
-
-        this.game = game;
-
-        this.bindMenuButtons();
-        this.bindSettings();
-        this.bindRadio();
-        this.bindGameOver();
-    }
-
-    showScreen(screenId) {
-
-        for (const id of this.screens) {
-
-            const screen =
-                document.getElementById(id);
-
-            screen.classList.toggle(
-                "active",
-                id === screenId
-            );
-        }
-    }
-
-    bindMenuButtons() {
-
-        const buttons =
-            document.querySelectorAll(
-                "[data-action]"
-            );
-
-        buttons.forEach((button) => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const action =
-                        button.dataset.action;
-
-                    this.audioSystem.resume();
-                    this.audioSystem.playMenuMove();
-
-                    if (action === "start") {
-                        this.game.startMission();
-                    }
-
-                    if (action === "settings") {
-                        this.showScreen(
-                            "settings-screen"
-                        );
-                    }
-
-                    if (action === "credits") {
-                        this.showScreen(
-                            "credits-screen"
-                        );
-                    }
-
-                    if (action === "back") {
-                        this.showScreen(
-                            "main-menu"
-                        );
-                    }
-
-                    if (action === "exit") {
-                        this.showMessage(
-                            "SAÍDA SOLICITADA."
-                        );
-                    }
-                }
-            );
+    init() {
+        document.querySelectorAll(".screen").forEach(screen => {
+            this.screens[screen.id] = screen;
         });
     }
 
-    bindSettings() {
+    showScreen(id) {
+        Object.values(this.screens).forEach(screen => {
+            screen.classList.remove("active");
+        });
 
-        const button =
-            document.getElementById(
-                "audio-toggle"
-            );
+        const screen = this.screens[id];
 
-        button.addEventListener(
-            "click",
-            () => {
+        if (!screen) return;
 
-                this.audioEnabled =
-                    !this.audioEnabled;
-
-                this.audioSystem.setEnabled(
-                    this.audioEnabled
-                );
-
-                this.game.musicSystem.setEnabled(
-                    this.audioEnabled
-                );
-
-                button.textContent =
-                    this.audioEnabled
-                        ? "ÁUDIO: ATIVADO"
-                        : "ÁUDIO: DESATIVADO";
-            }
-        );
+        screen.classList.add("active");
+        this.currentScreen = id;
     }
 
-    bindRadio() {
+    updateText(id, text) {
+        const element = document.getElementById(id);
 
-        const button =
-            document.getElementById(
-                "radio-continue"
-            );
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                this.audioSystem.playConfirm();
-
-                this.showScreen(
-                    "game-screen"
-                );
-
-                this.game.beginGameplay();
-            }
-        );
+        if (element) {
+            element.textContent = text;
+        }
     }
 
-    showRadio(
-        speaker,
-        message,
-        buttonText
-    ) {
+    showSystemMessage(text, duration = 1800) {
+        const message = document.getElementById("system-message");
 
-        document.querySelector(
-            ".radio-speaker"
-        ).textContent = speaker;
+        if (!message) return;
 
-        document.getElementById(
-            "radio-message"
-        ).textContent = message;
+        message.textContent = text;
+        message.classList.add("visible");
 
-        document.getElementById(
-            "radio-continue"
-        ).textContent = buttonText;
+        clearTimeout(this.messageTimer);
 
-        this.showScreen(
-            "radio-screen"
-        );
+        this.messageTimer = setTimeout(() => {
+            message.classList.remove("visible");
+        }, duration);
     }
 
-    updateObjective(text) {
-
-        document.getElementById(
-            "objective-text"
-        ).textContent = text;
-    }
-
-    updateDetection(status) {
-
-        document.getElementById(
-            "detection-status"
-        ).textContent = status;
-    }
-
-    bindGameOver() {
-
-        document.getElementById(
-            "restart-button"
-        ).addEventListener(
-            "click",
-            () => {
-
-                this.audioSystem.playConfirm();
-
-                this.game.restartMission();
-            }
-        );
-
-        document.getElementById(
-            "menu-button"
-        ).addEventListener(
-            "click",
-            () => {
-
-                this.audioSystem.playCancel();
-
-                this.game.returnToMenu();
-            }
-        );
-    }
-
-    showGameOver() {
-
-        this.showScreen(
-            "gameover-screen"
-        );
-    }
-
-    showMessage(message) {
-
-        console.info(message);
+    setMissionText(text) {
+        this.updateText("mission-objective", text);
     }
 }
+
+window.uiManager = new UIManager();
