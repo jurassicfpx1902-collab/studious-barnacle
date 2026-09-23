@@ -1,45 +1,56 @@
-export class RadioSystem {
+class RadioSystem {
+    constructor() {
+        this.messageIndex = 0;
 
-    constructor(audioSystem) {
-
-        this.audioSystem = audioSystem;
-
-        this.messages = {
-            start:
-                "— Prossiga até o ponto marcado e recupere o dispositivo de informação, e retorne até a área de extração.",
-
-            complete:
-                "— Muito bem, aguarde para mais respostas."
-        };
-
-        this.currentMessage = "";
+        this.messages = [
+            "— Prossiga até o ponto marcado e recupere o dispositivo de informação, e retorne até a área de extração.",
+            "— Mantenha o canal seguro. Evite chamar atenção desnecessária.",
+            "— Muito bem, aguarde para mais respostas."
+        ];
     }
 
-    openStartCommunication(uiSystem) {
+    start() {
+        this.messageIndex = 0;
 
-        this.currentMessage =
-            this.messages.start;
+        audioSystem.playRadioConnect();
 
-        this.audioSystem.playRadio();
+        this.showMessage();
+    }
 
-        uiSystem.showRadio(
-            "KATHERINE",
-            this.currentMessage,
-            "CONTINUAR"
+    showMessage() {
+        const text = this.messages[this.messageIndex];
+
+        uiManager.updateText(
+            "radio-speaker",
+            "KATHERINE"
+        );
+
+        uiManager.updateText(
+            "radio-message",
+            text
         );
     }
 
-    openCompletionCommunication(uiSystem) {
+    next() {
+        audioSystem.playRadioStatic();
 
-        this.currentMessage =
-            this.messages.complete;
+        this.messageIndex++;
 
-        this.audioSystem.playRadio();
+        if (this.messageIndex >= this.messages.length) {
+            this.finish();
+            return;
+        }
 
-        uiSystem.showRadio(
-            "KATHERINE",
-            this.currentMessage,
-            "CONTINUAR"
-        );
+        this.showMessage();
+    }
+
+    finish() {
+        audioSystem.playRadioStatic();
+
+        if (window.gameController) {
+            gameController.startGameplay();
+        }
     }
 }
+
+window.radioSystem = new RadioSystem();
