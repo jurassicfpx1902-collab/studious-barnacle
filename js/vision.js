@@ -1,107 +1,70 @@
-export class VisionSystem {
-
-    constructor(collisionSystem) {
-
-        this.collisionSystem =
-            collisionSystem;
-
-        this.range = 210;
-
-        this.angle =
-            Math.PI / 2.8;
+class VisionSystem {
+    constructor() {
+        this.maxDistance = 130;
+        this.fov = Math.PI * 0.55;
     }
 
-    canDetect(enemy, player) {
+    canSee(enemy, target) {
+        const dx = target.x - enemy.x;
+        const dy = target.y - enemy.y;
 
-        const dx =
-            player.x - enemy.x;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        const dy =
-            player.y - enemy.y;
-
-        const distance =
-            Math.hypot(dx, dy);
-
-        if (distance > this.range) {
+        if (distance > this.maxDistance) {
             return false;
         }
 
-        const playerAngle =
-            Math.atan2(dy, dx);
+        const directionToTarget = Math.atan2(dy, dx);
 
-        const enemyAngle =
-            Math.atan2(
-                enemy.directionY,
-                enemy.directionX
-            );
+        const enemyDirection = enemy.patrolPoints.length
+            ? Math.atan2(
+                enemy.patrolPoints[enemy.currentPoint].y - enemy.y,
+                enemy.patrolPoints[enemy.currentPoint].x - enemy.x
+            )
+            : 0;
 
-        let difference =
-            playerAngle - enemyAngle;
+        let angleDifference =
+            Math.abs(directionToTarget - enemyDirection);
 
-        while (difference > Math.PI) {
-            difference -= Math.PI * 2;
+        if (angleDifference > Math.PI) {
+            angleDifference = Math.PI * 2 - angleDifference;
         }
 
-        while (difference < -Math.PI) {
-            difference += Math.PI * 2;
-        }
+        return angleDifference <= this.fov / 2;
+    }
 
-        if (
-            Math.abs(difference) >
-            this.angle / 2
-        ) {
-            return false;
-        }
+    drawVision(ctx, enemy) {
+        if (enemy.neutralized) return;
 
-        return this.collisionSystem.hasLineOfSight(
+        const direction = enemy.patrolPoints.length
+            ? Math.atan2(
+                enemy.patrolPoints[enemy.currentPoint].y - enemy.y,
+                enemy.patrolPoints[enemy.currentPoint].x - enemy.x
+            )
+            : 0;
+
+        ctx.save();
+
+        ctx.globalAlpha = 0.10;
+        ctx.fillStyle = "#d44";
+
+        ctx.beginPath();
+
+        ctx.moveTo(enemy.x, enemy.y);
+
+        ctx.arc(
             enemy.x,
             enemy.y,
-            player.x,
-            player.y
-        );
-    }
-
-    draw(context, enemy) {
-
-        context.save();
-
-        context.translate(
-            enemy.x,
-            enemy.y
+            this.maxDistance,
+            direction - this.fov / 2,
+            direction + this.fov / 2
         );
 
-        const angle =
-            Math.atan2(
-                enemy.directionY,
-                enemy.directionX
-            );
+        ctx.closePath();
+        ctx.fill();
 
-        context.rotate(angle);
-
-        context.beginPath();
-
-        context.moveTo(0, 0);
-
-        context.arc(
-            0,
-            0,
-            this.range,
-            -this.angle / 2,
-            this.angle / 2
-        );
-
-        context.closePath();
-
-        context.fillStyle =
-            "rgba(180, 45, 45, 0.12)";
-
-        context.fill();
-
-        context.strokeStyle =
-            "rgba(190, 55, 55, 0.22)";
-
-        context.stroke();
-
-        context.restore();
+        ctx.restore();
     }
 }
+
+window.visionSystem = new VisionSystem();
