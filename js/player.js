@@ -1,315 +1,108 @@
 class Player {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
+    constructor() {
+        this.x = 100;
+        this.y = 300;
 
         this.width = 22;
-        this.height = 42;
+        this.height = 38;
 
-        this.speed = 2.2;
+        this.speed = 145;
+        this.running = false;
 
-        this.directionX = 0;
-        this.directionY = 1;
+        this.directionX = 1;
+        this.directionY = 0;
 
-        this.isMoving = false;
+        this.hidden = false;
+        this.neutralizing = false;
     }
 
-    update(input) {
-        this.directionX = input.x;
-        this.directionY = input.y;
+    reset(x, y) {
+        this.x = x;
+        this.y = y;
+        this.directionX = 1;
+        this.directionY = 0;
+        this.hidden = false;
+        this.neutralizing = false;
+    }
 
-        const length = Math.hypot(
-            this.directionX,
-            this.directionY
-        );
+    update(input, delta) {
+        let dx = input.x;
+        let dy = input.y;
 
-        if (length > 0) {
-            const normalizedX =
-                this.directionX / length;
+        const magnitude = Math.sqrt(dx * dx + dy * dy);
 
-            const normalizedY =
-                this.directionY / length;
-
-            this.x += normalizedX * this.speed;
-            this.y += normalizedY * this.speed;
-
-            this.isMoving = true;
-        } else {
-            this.isMoving = false;
+        if (magnitude > 1) {
+            dx /= magnitude;
+            dy /= magnitude;
         }
+
+        this.running = magnitude > 0.65;
+
+        const currentSpeed = this.running
+            ? this.speed * 1.25
+            : this.speed;
+
+        this.x += dx * currentSpeed * delta;
+        this.y += dy * currentSpeed * delta;
+
+        if (Math.abs(dx) > 0.1) {
+            this.directionX = Math.sign(dx);
+        }
+
+        if (Math.abs(dy) > 0.1) {
+            this.directionY = Math.sign(dy);
+        }
+
+        this.x = Math.max(20, Math.min(780, this.x));
+        this.y = Math.max(70, Math.min(550, this.y));
     }
 
     draw(ctx) {
         ctx.save();
 
-        ctx.translate(
-            this.x,
-            this.y
-        );
+        ctx.translate(this.x, this.y);
 
-        const moving =
-            this.isMoving ? 1 : 0;
+        if (this.directionX < 0) {
+            ctx.scale(-1, 1);
+        }
 
-        // Shadow
-        ctx.fillStyle =
-            "rgba(0, 0, 0, 0.35)";
+        // Body
+        ctx.fillStyle = "#11151a";
+        ctx.fillRect(-8, -5, 16, 21);
 
-        ctx.beginPath();
+        // Head
+        ctx.fillStyle = "#d4b39a";
+        ctx.fillRect(-6, -18, 12, 12);
 
-        ctx.ellipse(
-            0,
-            21,
-            13,
-            4,
-            0,
-            0,
-            Math.PI * 2
-        );
+        // Hair
+        ctx.fillStyle = "#c7b26d";
+        ctx.fillRect(-6, -19, 12, 5);
 
-        ctx.fill();
+        // Arms
+        ctx.fillStyle = "#171c21";
+        ctx.fillRect(-13, -3, 5, 15);
+        ctx.fillRect(8, -3, 5, 15);
 
         // Legs
-        ctx.fillStyle = "#15191d";
-
-        ctx.fillRect(
-            -9,
-            8,
-            7,
-            15
-        );
-
-        ctx.fillRect(
-            2,
-            8,
-            7,
-            15
-        );
+        ctx.fillRect(-7, 16, 6, 17);
+        ctx.fillRect(1, 16, 6, 17);
 
         // Boots
         ctx.fillStyle = "#090b0d";
-
-        ctx.fillRect(
-            -10,
-            20,
-            9,
-            5
-        );
-
-        ctx.fillRect(
-            1,
-            20,
-            10,
-            5
-        );
-
-        // Hips
-        ctx.fillStyle = "#20252a";
-
-        ctx.fillRect(
-            -9,
-            4,
-            18,
-            8
-        );
-
-        // Torso
-        ctx.beginPath();
-
-        ctx.moveTo(-8, -11);
-        ctx.lineTo(8, -11);
-        ctx.lineTo(10, 5);
-        ctx.lineTo(-10, 5);
-
-        ctx.closePath();
-
-        ctx.fillStyle = "#11161a";
-        ctx.fill();
-
-        // Vest / equipment
-        ctx.fillStyle = "#252b30";
-
-        ctx.fillRect(
-            -7,
-            -7,
-            14,
-            9
-        );
-
-        // Center detail
-        ctx.fillStyle = "#080a0c";
-
-        ctx.fillRect(
-            -2,
-            -6,
-            4,
-            7
-        );
-
-        // Shoulders
-        ctx.fillStyle = "#171c20";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            -9,
-            -8,
-            4,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.arc(
-            9,
-            -8,
-            4,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        // Arms
-        ctx.fillRect(
-            -12,
-            -5,
-            6,
-            13
-        );
-
-        ctx.fillRect(
-            6,
-            -5,
-            6,
-            13
-        );
-
-        // Hands
-        ctx.fillStyle = "#c7a88c";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            -9,
-            9,
-            2.5,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.arc(
-            9,
-            9,
-            2.5,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        // Neck
-        ctx.fillStyle = "#b8957a";
-
-        ctx.fillRect(
-            -3,
-            -14,
-            6,
-            5
-        );
-
-        // Head
-        ctx.fillStyle = "#d0ad90";
-
-        ctx.beginPath();
-
-        ctx.ellipse(
-            0,
-            -19,
-            7,
-            8,
-            0,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        // Blonde hair
-        ctx.fillStyle = "#c8ad67";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            0,
-            -22,
-            7,
-            Math.PI,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        ctx.fillRect(
-            -7,
-            -22,
-            14,
-            4
-        );
-
-        // Face direction
-        ctx.fillStyle = "#6e5548";
-
-        const eyeX =
-            this.directionX > 0
-                ? 3
-                : this.directionX < 0
-                    ? -3
-                    : 0;
-
-        ctx.fillRect(
-            eyeX,
-            -19,
-            1.5,
-            1.5
-        );
-
-        // Back equipment
-        ctx.fillStyle = "#0a0d10";
-
-        ctx.fillRect(
-            -11,
-            -7,
-            3,
-            13
-        );
-
-        ctx.fillRect(
-            8,
-            -7,
-            3,
-            13
-        );
-
-        // Movement detail
-        if (moving) {
-            ctx.globalAlpha = 0.35;
-
-            ctx.fillStyle = "#3d5663";
-
-            ctx.fillRect(
-                -13,
-                12,
-                2,
-                5
-            );
-
-            ctx.fillRect(
-                11,
-                12,
-                2,
-                5
-            );
-        }
+        ctx.fillRect(-8, 31, 7, 5);
+        ctx.fillRect(1, 31, 8, 5);
 
         ctx.restore();
     }
+
+    getBounds() {
+        return {
+            x: this.x - this.width / 2,
+            y: this.y - this.height / 2,
+            width: this.width,
+            height: this.height
+        };
+    }
 }
+
+window.player = new Player();
